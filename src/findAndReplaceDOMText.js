@@ -7,7 +7,21 @@
  * and replaces each match (or node-separated portions of the match)
  * in the specified element.
  */
-window.findAndReplaceDOMText = (function() {
+
+(function (root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define([], factory);
+	} else if (typeof exports === 'object') {
+		// Node. Does not work with strict CommonJS, but
+		// only CommonJS-like environments that support module.exports,
+		// like Node.
+		module.exports = factory();
+	} else {
+		// Browser globals (root is window)
+		root.findAndReplaceDOMText = factory();
+	}
+}(this, function () {
 
 	var PORTION_MODE_RETAIN = 'retain';
 	var PORTION_MODE_FIRST = 'first';
@@ -61,7 +75,7 @@ window.findAndReplaceDOMText = (function() {
 					m.index += m[0].indexOf(cg);
 					m[0] = cg;
 				}
-		 
+
 				m.endIndex = m.index + m[0].length;
 				m.startIndex = m.index;
 				m.index = mi;
@@ -78,9 +92,9 @@ window.findAndReplaceDOMText = (function() {
 		return true;
 	}
 
-	/** 
+	/**
 	 * findAndReplaceDOMText
-	 * 
+	 *
 	 * Locates matches and replaces with replacementNode
 	 *
 	 * @param {Node} node Element or Text node to search within
@@ -157,7 +171,7 @@ window.findAndReplaceDOMText = (function() {
 			if (!match[0]) {
 				throw new Error('findAndReplaceDOMText cannot handle zero-length matches');
 			}
-	 
+
 			match.endIndex = match.index + match[0].length;
 			match.startIndex = match.index;
 			match.index = matchIndex;
@@ -200,7 +214,7 @@ window.findAndReplaceDOMText = (function() {
 
 		},
 
-		/** 
+		/**
 		 * Steps through the target node, looking for matches, and
 		 * calling replaceFn when a match is found.
 		 */
@@ -272,7 +286,7 @@ window.findAndReplaceDOMText = (function() {
 					curNode = this.replaceMatch(match, startPortion, innerPortions, endPortion);
 
 					// processMatches has to return the node that replaced the endNode
-					// and then we step back so we can continue from the end of the 
+					// and then we step back so we can continue from the end of the
 					// match:
 
 					atIndex -= (endPortion.node.data.length - endPortion.endIndexInNode);
@@ -516,4 +530,4 @@ window.findAndReplaceDOMText = (function() {
 
 	return exposed;
 
-}());
+}));
